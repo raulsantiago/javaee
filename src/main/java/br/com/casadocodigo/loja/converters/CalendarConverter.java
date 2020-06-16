@@ -12,6 +12,7 @@ import javax.faces.convert.FacesConverter;
 
 @FacesConverter(forClass=Calendar.class)
 public class CalendarConverter implements Converter {
+	
     private DateTimeConverter converter = new DateTimeConverter();
 
     public CalendarConverter() {

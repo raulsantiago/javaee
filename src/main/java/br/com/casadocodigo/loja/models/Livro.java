@@ -19,6 +19,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Length;
+//import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 public class Livro {
@@ -44,14 +45,16 @@ public class Livro {
 	private Integer numeroPaginas;	
 	
 	@Temporal(TemporalType.DATE)
-	private Calendar dataPublicacao; 
+	private Calendar dataPublicacao;
+	
+	private String capaPath;
 	
 	// Esse new ArrayList<>() ajuda e salvar dados vazio no banco e nao nulo
 	@ManyToMany
 	@Size(min=1) // número mínimo de elementos na lista
     @NotNull // A lista não pode ser nula
-	private List<Autor> autores = new ArrayList<>();	
-	
+	private List<Autor> autores = new ArrayList<>();
+
 	public Integer getId() {
 		return id;
 	}
@@ -92,14 +95,6 @@ public class Livro {
 		this.numeroPaginas = numeroPaginas;
 	}
 
-	public List<Autor> getAutores() {
-		return autores;
-	}
-
-	public void setAutores(List<Autor> autores) {
-		this.autores = autores;
-	}
-	
 	public Calendar getDataPublicacao() {
 		return dataPublicacao;
 	}
@@ -108,10 +103,27 @@ public class Livro {
 		this.dataPublicacao = dataPublicacao;
 	}
 
+	public String getCapaPath() {
+		return capaPath;
+	}
+
+	public void setCapaPath(String capaPath) {
+		this.capaPath = capaPath;
+	}
+
+	public List<Autor> getAutores() {
+		return autores;
+	}
+
+	public void setAutores(List<Autor> autores) {
+		this.autores = autores;
+	}
+
 	@Override
 	public String toString() {
 		return "Livro [id=" + id + ", titulo=" + titulo + ", descricao=" + descricao + ", preco=" + preco
-				+ ", numeroPaginas=" + numeroPaginas + ", dataPublicacao=" + dataPublicacao + ", autores=" + autores
-				+ "]";
-	}
+				+ ", numeroPaginas=" + numeroPaginas + ", dataPublicacao=" + dataPublicacao + ", capaPath=" + capaPath
+				+ ", autores=" + autores + "]";
+	}	
+	
 }
