@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -34,6 +35,7 @@ public class Livro {
 	private String titulo;
 	
 	// Texto grande @Lob não funciona com postgres tem que gerar manual
+	@Column(columnDefinition="TEXT")
 	@Length(min=10) // Número mínimo de caracteres que o campo pode ter
 	@NotBlank
 	private String descricao;
