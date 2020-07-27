@@ -19,12 +19,19 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hibernate.validator.constraints.Length;
 //import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Cacheable
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Livro {
 	
 	@Id
@@ -57,6 +64,8 @@ public class Livro {
 	@ManyToMany
 	@Size(min=1) // número mínimo de elementos na lista
     @NotNull // A lista não pode ser nula
+    @XmlElement(name="autor") // Organizando o arquivo exportado de XML
+    @XmlElementWrapper(name="autores") // Organizando o arquivo exportado de XML
 	private List<Autor> autores = new ArrayList<>();
 
 	public Integer getId() {
