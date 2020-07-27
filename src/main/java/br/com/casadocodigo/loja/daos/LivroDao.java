@@ -3,9 +3,13 @@ package br.com.casadocodigo.loja.daos;
 import java.util.List;
 
 import javax.ejb.Stateful;
+import javax.persistence.Cache;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
+
+import org.hibernate.SessionFactory;
+import org.hibernate.annotations.QueryHints;
 
 import br.com.casadocodigo.loja.models.Livro;
 
@@ -18,6 +22,23 @@ public class LivroDao {
 	public void salvar(Livro livro) {		
 		manager.persist(livro);
 	}
+	
+	// Metodo pra limpar o cacher  - só conhecimento sem uso
+	public void limparCache() {
+		Cache cache = manager.getEntityManagerFactory().getCache();
+		// Limpa somente o primento Id do Livro
+		cache.evict(Livro.class, 1l);
+		// Limpa todo o Livro
+		cache.evict(Livro.class);
+		// Limpa todas as entidades
+		cache.evictAll();
+		
+		SessionFactory factory = manager.getEntityManagerFactory().unwrap(SessionFactory.class);
+		// Limpa todas as regiões
+		factory.getCache().evictAllRegions();
+		// Limpa as regiões mapeadas como HOME
+		factory.getCache().evictQueryRegion("home");
+	}
 
 	 public List<Livro> listar() {
 	        String jpql = "select distinct(l) from Livro l"
@@ -26,14 +47,22 @@ public class LivroDao {
 	        return manager.createQuery(jpql, Livro.class).getResultList();
 	    }
 
+	
+	// Fazendo um Hint - Manter dados do banco em memoria para acesso velox
 	public List<Livro> ultimosLancamentos() {
 		String jpql = "select l from Livro l order by l.dataPublicacao desc";
-		return manager.createQuery(jpql, Livro.class).setMaxResults(5).getResultList();
+		return manager.createQuery(jpql, Livro.class).setMaxResults(5)
+				.setHint(QueryHints.CACHEABLE, true)
+				.setHint(QueryHints.CACHE_REGION, "home")
+				.getResultList();
 	}
 
 	public List<Livro> demaisLivros() {
 		String jpql = "select l from Livro l order by l.dataPublicacao desc";
-		return manager.createQuery(jpql, Livro.class).setFirstResult(5).getResultList();
+		return manager.createQuery(jpql, Livro.class).setFirstResult(5)
+				.setHint(QueryHints.CACHEABLE, true)
+				.setHint(QueryHints.CACHE_REGION, "home")
+				.getResultList();
 	}
 
 	// Query para fazer a busca pelos relacionamento
@@ -49,3 +78,4 @@ public class LivroDao {
 	}
 
 }
+

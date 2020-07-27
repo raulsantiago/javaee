@@ -1,10 +1,13 @@
 package br.com.casadocodigo.loja.beans;
 
 import javax.enterprise.inject.Model;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
 import br.com.casadocodigo.loja.models.CarrinhoCompras;
+import br.com.casadocodigo.loja.models.Compra;
 import br.com.casadocodigo.loja.models.Usuario;
 
 @Model
@@ -16,10 +19,22 @@ public class CheckoutBean {
 	@Inject
 	private CarrinhoCompras carrinho;
 	
+	@Inject
+	private FacesContext facesContext;  
+	
 	// Serve para toda vez que haver alteração no banco de dados.
 	@Transactional
 	public void finalizar() {
-		carrinho.finalizar(usuario);		
+		Compra compra = new Compra();
+		compra.setUsuario(usuario);
+		carrinho.finalizar(compra);
+		
+		String contextName = facesContext.getExternalContext().getRequestContextPath();
+		HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+		// Fazendo um redirect temporário com código 307 ou HttpServletResponse.SC_TEMPORARY_REDIRECT mantendo a requisição de chamada POST
+		response.setStatus(HttpServletResponse.SC_TEMPORARY_REDIRECT);
+		response.setHeader("Location", contextName +"/services/pagamento?uuid="+compra.getUuid());
+		
 	}
 
 	public Usuario getUsuario() {
@@ -29,6 +44,8 @@ public class CheckoutBean {
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
+	
+	
 	
 	
 
