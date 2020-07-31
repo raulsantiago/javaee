@@ -17,23 +17,21 @@ public class Compra {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Integer id;
-	
+	private Integer id;	
 	
 	@ManyToOne(cascade=CascadeType.PERSIST)
 	private Usuario usuario;
 	
 	@Column(columnDefinition="TEXT")
 	private String itens;
-	
-	
+		
 	private String uuid;
 	
 	private BigDecimal total; 
 	
 	@PrePersist
-	public void createUUID() {
-		this.uuid = UUID.randomUUID().toString(); 
+	public void prePersist() {
+		this.uuid = UUID.randomUUID().toString();
 	}
 
 	public Integer getId() {
